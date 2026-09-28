@@ -1,0 +1,67 @@
+# SHA-256 checksums
+
+Reference checksums for the artifacts this project talks about. Vendor
+binaries are **not** distributed here — only their hashes, so that anyone
+holding a dump of their own unit can confirm it is the same artifact the
+documentation describes.
+
+## Vendor reference artifact
+
+Factory FIP partition, MTD3 slice, 2,097,152 bytes, taken from a JIDU6801:
+
+```
+cd204b85467f2f2f209ee41d290f582078ed8c59d34b07d0fa50e0a0cd6b208f  factory_fip_6801.bin
+```
+
+## OpenWrt build provenance
+
+The unit that produced `analysis/bootlogs/openwrt-boot.log` reports:
+
+| Field | Value |
+|:---|:---|
+| Release | `OpenWrt SNAPSHOT r0-57072d9` |
+| Target / arch | `mediatek/filogic` · `aarch64_cortex-a53` |
+| Kernel | `6.18.52` (`OpenWrt GCC 14.4.0 r0-57072d9`, Binutils 2.46.1) |
+| Profile | `jiorouter_ax6000-jidu6801` |
+
+Installed UBI volumes on that unit:
+
+| Volume | Contents |
+|:---|:---|
+| `ubi0_0` | `kernel` — installed kernel FIT |
+| `ubi0_1` | `rootfs` — SquashFS root |
+| `ubi0_2` | `rootfs_data` — UBIFS overlay (the writable state) |
+| `ubi0_3` | `u-boot-env` — live U-Boot environment |
+| `ubi0_4` / `ubi0_5` | `kernel2` / `rootfs2` — slot 1, untouched stock |
+
+SHA-256 of the installed `kernel` volume on that unit:
+
+```
+ebae7d5e99ea3d8fd9627ed5a72d75ab2f1ae62016b798fc4836f21d4900e237  (contents of /dev/ubi0_0)
+```
+
+`rootfs_data` is deliberately not checksummed — it is the device's mutable
+state and differs per unit by definition.
+
+## Reproducing the build
+
+Image names produced by the device definition in `openwrt/`:
+
+```
+openwrt-mediatek-filogic-jiorouter_ax6000-jidu6801-initramfs-kernel.bin
+openwrt-mediatek-filogic-jiorouter_ax6000-jidu6801-squashfs-sysupgrade.bin
+```
+
+Note there is no `.itb`: the build emits a bare arm64 `Image` with a separate
+DTB, while the stock bootloader is a FIT loader. See
+`docs/openwrt-port.md` §6.2.
+
+Builds are not bit-reproducible across toolchain or snapshot revisions.
+For reference, checksums from this verified tree build (commit `8dafdff` on
+`r0-57072d9`) as recorded in `bin/targets/mediatek/filogic/sha256sums`:
+
+```
+93da4a6170d34234639fb8032d625843f038b559ce108cbc48619a09d7537626  openwrt-mediatek-filogic-jiorouter_ax6000-jidu6801-initramfs-kernel.bin
+1661db3904618b898e01df68ebe25064fc24d65472a376eaeef23b96529ec24a  openwrt-mediatek-filogic-jiorouter_ax6000-jidu6801-squashfs-sysupgrade.bin
+```
+

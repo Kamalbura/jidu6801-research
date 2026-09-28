@@ -1,0 +1,28 @@
+UBI Volume Table Analysis (MTD4: "ubi")
+Total PEBs: 480 (60 MiB)
+Logical Eraseblock Size: 124 KiB (126,976 bytes)
+
+Volume 0:
+  Name: kernel
+  Vol ID: 0
+  Type: dynamic
+  Alignment: 1
+  Data Bytes: 4,801,138 bytes (~4.6 MiB)
+  Used LEBs: 39
+
+Volume 1:
+  Name: rootfs
+  Vol ID: 1
+  Type: dynamic
+  Alignment: 1
+  Data Bytes: 28,061,696 bytes (~26.8 MiB)
+  Used LEBs: 221
+
+Volume 2:
+  Name: rootfs_data
+  Vol ID: 2
+  Type: dynamic
+  Alignment: 1
+  Flags: Auto-resize
+  Filesystem: UBIFS (Read-Write Overlay)
+  Allocated LEBs: Remaining free LEBs in UBI pool (~220 LEBs)

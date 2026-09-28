@@ -1,0 +1,46 @@
+# Partition / storage layout capture - JioRouter AX6000 JIDU6801
+# Source: UART0 serial console, 115200 8N1, cold boot of the STOCK
+# firmware on this unit. Identifiers redacted by tools/sanitize-log.py.
+#
+# SCOPE: this is the vendor stock kernel (5.4.225), not the OpenWrt build
+# produced by this repository. It is published because it is the
+# authoritative on-hardware record of the physical MTD partition layout,
+# NMBM region and switch/PHY inventory. Note the stock names it 'mfg'
+# (lowercase) where the OpenWrt device tree uses 'MFG' for the same
+# 2 MiB region at 0x0eb80000.
+#
+[    1.310171] Bridge firewalling registered
+[    1.314256] 8021q: 802.1Q VLAN Support v1.8
+[    1.327610] nmbm nmbm_spim_nand: Signature found at block 2047 [0x0ffe0000]
+[    1.335566] nmbm nmbm_spim_nand: First info table with writecount 0 found in block 1920
+[    1.346518] nmbm nmbm_spim_nand: Second info table with writecount 0 found in block 1923
+[    1.354610] nmbm nmbm_spim_nand: NMBM has been successfully attached 
+[    1.361234] 8 fixed-partitions partitions found on MTD device nmbm_spim_nand
+[    1.368281] Creating 8 MTD partitions on "nmbm_spim_nand":
+[    1.373764] 0x000000000000-0x000000100000 : "BL2"
+[    1.379006] 0x000000100000-0x000000180000 : "u-boot-env"
+[    1.384712] 0x000000180000-0x000000380000 : "Factory"
+[    1.390158] 0x000000380000-0x000000580000 : "FIP"
+[    1.395260] 0x000000580000-0x000009180000 : "ubi"
+[    1.400585] 0x000009180000-0x00000eb80000 : "ubi2"
+[    1.405942] 0x00000eb80000-0x00000ed80000 : "mfg"
+[    1.411017] 0x00000ed80000-0x00000ef80000 : "Jio-Reserved"
+[    1.626791] mt7530 mdio-bus:1f wan0 (uninitialized): PHY [dsa-0.0:00] driver [Generic PHY]
+[    1.636377] mt7530 mdio-bus:1f lan1 (uninitialized): PHY [dsa-0.0:01] driver [Generic PHY]
+[    1.645885] mt7530 mdio-bus:1f lan2 (uninitialized): PHY [dsa-0.0:02] driver [Generic PHY]
+[    1.655334] mt7530 mdio-bus:1f lan3 (uninitialized): PHY [dsa-0.0:03] driver [Generic PHY]
+[    1.664837] mt7530 mdio-bus:1f lan4 (uninitialized): PHY [dsa-0.0:04] driver [Generic PHY]
+[    1.673695] mt7530 mdio-bus:1f: configuring for fixed/2500base-x link mode
+[    1.681096] mt7530 mdio-bus:1f: configuring for fixed/2500base-x link mode
+[    1.681270] mt7530 mdio-bus:1f: Link is Up - 2.5Gbps/Full - flow control rx/tx
+[    1.688242] DSA: tree 0 setup
+[    1.688480] mt7530 mdio-bus:1f: Link is Up - 2.5Gbps/Full - flow control rx/tx
+[    1.705340] mt7530-nl: genl_register_family_with_ops 
+[    1.710798] UBI: auto-attach mtd5
+[    1.714141] ubi0: attaching mtd5
+[    2.092584] ubi0: scanning is finished
+[    2.101013] ubi0: attached mtd5 (name "ubi", size 140 MiB)
+[    2.106505] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    2.113371] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    2.120147] ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    2.127098] ubi0: good PEBs: 1120, bad PEBs: 0, corrupted PEBs: 0

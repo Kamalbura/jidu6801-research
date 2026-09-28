@@ -1,0 +1,52 @@
+# Maintainer-local material (working notes, release bookkeeping, scratch work)
+.local/
+
+# Byte-compiled / optimized Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Raw firmware images, NAND dumps, and proprietary containers
+*.bin
+*.dump
+*.img
+*.raw
+*.fip
+*.dtb
+*.ubi
+*.squashfs
+
+# Compressed archives & backups
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+
+# Secret and credential environment files
+.env
+.env.*
+*.secret
+*.vault
+credentials*
+
+# Cryptographic private keys and certificates
+*.key
+*.pem
+*.crt
+*.der
+*.pub
+id_rsa*
+id_ed25519*
+
+# Temporary test logs (except tracked sanitized bootlogs)
+*.log
+!analysis/bootlogs/*.log
+
+# Editor and OS metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~

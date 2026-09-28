@@ -1,0 +1,92 @@
+# Boot chain capture - JioRouter AX6000 JIDU6801
+# Source: UART0 serial console, 115200 8N1, cold boot.
+# Device-identifying values (MAC addresses, vendor build tags) are redacted
+# by tools/sanitize-log.py. Version strings, build dates, image IDs and
+# anti-rollback results are verbatim as printed by the hardware.
+#
+
+NOTICE:  BL2: v2.8(release):[VENDOR_TAG]
+NOTICE:  BL2: Built : 14:02:23, Dec  2 2024
+INFO:    Using crypto library 'mbed TLS'
+INFO:    BL2: Doing platform setup
+NOTICE:  WDT: Reboot status is 0x40000000:
+NOTICE:       Software reset (reboot)
+NOTICE:  WDT: disabled
+NOTICE:  CPU: MT7986 (2000MHz)
+NOTICE:  EMI: Using DDR4 settings
+: 512MB
+NOTICE:  EMI: complex R/W mem teNOTICE:  NMBM has been successfully attached in read-only mode
+INFO:    BL2: Loading image id 3
+INFO:    Loading image id=7 at address 0x42000000
+INFO:    Image id=7 loaded: 0x42000000 - 0x4200060e
+NOTICE:  Verifying BL Anti-Rollback Version ... bl_ar_ver:0>=0+ OK
+INFO:    Loading image id=9 at address 0x42000000
+INFO:    Image id=9 loaded: 0x42000000 - 0x420004da
+NOTICE:  Verifying BL Anti-Rollback Version ... bl_ar_ver:0>=0+ OK
+INFO:    Loading image id=13 at address 0x42000000
+INFO:    Image id=13 loaded: 0x42000000 - 0x42000430
+NOTICE:  Verifying BL Anti-Rollback Version ... bl_ar_ver:0>=0+ OK
+INFO:    Loading image id=3 at address 0x42000000
+INFO:    Image id=3 loaded: 0x42000000 - 0x420091fd
+INFO:    BL2: Loading image id 5
+INFO:    Loading image id=11 at address 0x42000000
+INFO:    Image id=11 loaded: 0x42000000 - 0x420004ea
+NOTICE:  Verifying BL Anti-Rollback Version ... bl_ar_ver:0>=0+ OK
+INFO:    Loading image id=15 at address 0x42000000
+INFO:    Image id=15 loaded: 0x42000000 - 0x42000440
+NOTICE:  Verifying BL Anti-Rollback Version ... bl_ar_ver:0>=0+ OK
+INFO:    Loading image id=5 at address 0x42000000
+INFO:    Image id=5 loaded: 0x42000000 - 0x420bddb8
+NOTICE:  BL2: Booting BL31
+INFO01000
+INFO:    SPSR = 0x3cd
+INFO:    Total CPU count: 4
+INFO:    MCUSYS: Disable 512KB L2C shared SRAM
+INFO:    Secondary bootloader is AArch64
+INFO:    GICv3 without legacy support detected.
+INFO:    ARM GICv3 driver initialized in EL3
+INFO:    Maximum SPI INTID supported: 671
+INFO:    SPMC: Changed to SPMC mode
+NOTICE:  BL31: v2.8(release):[VENDOR_TAG]
+NOTICE:  BL31: Built : 02:19:47, Jul  1 2023
+INFO:    [MPU](Region0)sa:0x0300, ea:0x0302
+INFO:    [MPU](Region0)apc0:0x80b6db69, apc1:0x00b6db6d
+INFO:    [MPU](Region1)sa:0x0000, ea:0x0000
+INFO:    [MPU](Region1)apc0:0x00000000, apc1:0x00000000
+INFO:    [MPU](Region2)sa:0x0000, ea:0x0000
+INFO:    [MPU](Region2)apc0:0x00000000, apc1:0x00000000
+INFO:    [MPU](Region3)sa:0x0000, ea:0x0000
+INFO:    [MPU](Region3)apc0:0x00000000, apc1:0x00000000
+INFO:    [DEVAPC] devapc_init done
+INFO:    BL31: Initializing runtime services
+INFO:    BL31: Preparing for EL3 exit to normal world
+INFO:    Entry point address = 0x41e00000
+INFO:    SPSR = 0x3c9
+
+
+U-Boot 2023.04 (Jul 01 2023 - 02:17:43 +0530)
+
+CPU:   MediaTek MT7986
+Model: mt7986-rfb
+       (mediatek,mt7986-spim-nand-rfb)
+DRAM:  512 MiB
+Core:  48 devices, 18 uclasses, devicetree: separate
+
+Initializing NMBM ...
+spi-nand: spi_nand spi_nand@1: Winbond SPI NAND was found.
+spi-nand: spi_nand spi_nand@1: 256 MiB, block size: 128 KiB, page size: 2048, OOB size: 128
+Could not find a valid device for nmbm0
+Signature found at block 2047 [0x0ffe0000]
+First info table with writecount 0 found in block 1920
+Second info table with writecount 0 found in block 1923
+NMBM has been successfully attached 
+
+MMC:   mmc@11230000: 0
+Loading Environment from UBI... Read 524288 bytes from volume u-boot-env to 000000005f77d540
+OK
+In:    serial@11002000
+Out:   serial@11002000
+Err:   serial@11002000
+Net:   eth0: ethernet@15100000
+Autoboot in 2 seconds
+press 'Enter' to stop autoboot count down
