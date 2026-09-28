@@ -1,0 +1,137 @@
+From e6eb4e32131e54f72ba014b3f685bf58c0c241e7 Mon Sep 17 00:00:00 2001
+From: Kamal Bura <burakamal13@gmail.com>
+Date: Mon, 28 Sep 2026 04:45:06 +0530
+Subject: [PATCH] mediatek: filogic: add support for JioRouter AX6000 JIDU6801
+
+The JioRouter AX6000 JIDU6801 is a dual-band Wi-Fi 6 router based on the
+MediaTek MT7986A (Filogic 830) SoC.
+
+Hardware:
+  - SoC:    MediaTek MT7986A, 4x Cortex-A53 @ 2.0 GHz
+  - RAM:    512 MiB DDR4
+  - Flash:  256 MiB SPI-NAND (Winbond W25N02KV, MediaTek NMBM)
+  - Switch: MediaTek MT7531AE DSA
+      * port 0: 2.5G SGMII WAN (MaxLinear GPY211 PHY)
+      * ports 1-4: 1G LAN
+      * port 6: 2.5G SGMII CPU link to gmac0
+  - Wireless: MT7976C DBDC, 4x4 2.4 GHz + 4x4 5 GHz (AX6000)
+  - LEDs:   red GPIO 12, green GPIO 13, blue GPIO 14
+  - Button: reset GPIO 9
+  - USB:    1x USB 3.0 Type-A host
+  - UART:   115200 8N1, 3.3 V TTL
+
+The board shares mt7986a-jiorouter-common.dtsi with the existing
+jiorouter_ax6000-jidu6j01 target, so only the switch port layout needs to be
+described. The base MAC address is stored as a 6 byte binary value at
+offset 0 of the MFG partition, which is what the existing
+mediatek_setup_macs() default already reads, so only the case label needs
+to list this board.
+
+Signed-off-by: Kamal Bura <burakamal13@gmail.com>
+---
+ .../dts/mt7986a-jiorouter-ax6000-jidu6801.dts | 53 +++++++++++++++++++
+ .../filogic/base-files/etc/board.d/02_network |  1 +
+ target/linux/mediatek/image/filogic.mk        | 15 ++++++
+ 3 files changed, 69 insertions(+)
+ create mode 100644 target/linux/mediatek/dts/mt7986a-jiorouter-ax6000-jidu6801.dts
+
+diff --git a/target/linux/mediatek/dts/mt7986a-jiorouter-ax6000-jidu6801.dts b/target/linux/mediatek/dts/mt7986a-jiorouter-ax6000-jidu6801.dts
+new file mode 100644
+index 0000000..96f188b
+--- /dev/null
++++ b/target/linux/mediatek/dts/mt7986a-jiorouter-ax6000-jidu6801.dts
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++
++/dts-v1/;
++#include "mt7986a-jiorouter-common.dtsi"
++
++/ {
++	compatible = "jiorouter,ax6000-jidu6801", "mediatek,mt7986a";
++	model = "JioRouter AX6000 JIDU6801";
++};
++
++&switch {
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			label = "wan";
++		};
++
++		port@1 {
++			reg = <1>;
++			label = "lan1";
++		};
++
++		port@2 {
++			reg = <2>;
++			label = "lan2";
++		};
++
++		port@3 {
++			reg = <3>;
++			label = "lan3";
++		};
++
++		port@4 {
++			reg = <4>;
++			label = "lan4";
++		};
++
++		port@6 {
++			reg = <6>;
++			ethernet = <&gmac0>;
++			phy-mode = "2500base-x";
++
++			fixed-link {
++				speed = <2500>;
++				full-duplex;
++				pause;
++			};
++		};
++	};
++};
+diff --git a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
+index a71bce3..9f3ffcf 100644
+--- a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
++++ b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
+@@ -321,6 +321,7 @@ mediatek_setup_macs()
+ 		wan_mac=$label_mac
+ 		lan_mac=$(macaddr_add "$label_mac" 1)
+ 		;;
++	jiorouter,ax6000-jidu6801|\
+ 	jiorouter,ax6000-jidu6j01)
+ 		local mfg_dev
+ 		local model
+diff --git a/target/linux/mediatek/image/filogic.mk b/target/linux/mediatek/image/filogic.mk
+index d07abed..2d238e2 100644
+--- a/target/linux/mediatek/image/filogic.mk
++++ b/target/linux/mediatek/image/filogic.mk
+@@ -2357,6 +2357,21 @@ define Device/jiorouter_ax6000-jidu6j01
+ endef
+ TARGET_DEVICES += jiorouter_ax6000-jidu6j01
+ 
++define Device/jiorouter_ax6000-jidu6801
++  DEVICE_VENDOR := JioRouter
++  DEVICE_MODEL := AX6000
++  DEVICE_VARIANT := JIDU6801
++  DEVICE_DTS := mt7986a-jiorouter-ax6000-jidu6801
++  DEVICE_DTS_DIR := ../dts
++  DEVICE_PACKAGES := kmod-usb3 kmod-mt7915e kmod-mt7986-firmware mt7986-wo-firmware
++  UBINIZE_OPTS := -E 5
++  UBOOTENV_IN_UBI := 1
++  BLOCKSIZE := 128k
++  PAGESIZE := 2048
++  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
++endef
++TARGET_DEVICES += jiorouter_ax6000-jidu6801
++
+ define Device/kebidumei_ax3000-u22
+   DEVICE_VENDOR := Kebidumei
+   DEVICE_MODEL := AX3000-U22
+-- 
+2.55.0
+
