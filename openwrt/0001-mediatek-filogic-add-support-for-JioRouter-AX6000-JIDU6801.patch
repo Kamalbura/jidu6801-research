@@ -1,10 +1,13 @@
-From 8914d364cfa14be836caf6605bd417bb3d152533 Mon Sep 17 00:00:00 2001
+From 26d157af7cd0c6ba4a627cf0c587d7d26476b8be Mon Sep 17 00:00:00 2001
 From: Kamal Bura <burakamal13@gmail.com>
 Date: Mon, 28 Sep 2026 04:45:06 +0530
-Subject: [PATCH] mediatek: filogic: add support for JioRouter AX6000 JIDU6801
+Subject: [PATCH] mediatek: filogic: add JioRouter AX6000 JIDU6801 to JIDU6J01
+ target
 
 The JioRouter AX6000 JIDU6801 is a dual-band Wi-Fi 6 router based on the
-MediaTek MT7986A (Filogic 830) SoC.
+MediaTek MT7986A (Filogic 830) SoC. It shares the identical hardware
+platform with the other JioRouter AX6000 family variants (JIDU6201,
+JIDU6401, JIDU6601, JIDU6701) supported by jiorouter_ax6000-jidu6j01.
 
 Hardware:
 - SoC: MediaTek MT7986A (4x ARM Cortex-A53 @ 2.0 GHz)
@@ -37,125 +40,37 @@ Flashing instructions:
 4. Set up TFTP server on host PC (192.168.1.2) and boot initramfs image:
      setenv ipaddr 192.168.1.1
      setenv serverip 192.168.1.2
-     tftpboot 0x46000000 openwrt-mediatek-filogic-jiorouter_ax6000-jidu6801-initramfs-kernel.bin
+     tftpboot 0x46000000 openwrt-mediatek-filogic-jiorouter_ax6000-jidu6j01-initramfs-kernel.bin
      fdt addr $(fdtcontroladdr)
      fdt rm /signature
      bootm
 5. Once booted into OpenWrt initramfs, flash the sysupgrade image:
-     sysupgrade -n /tmp/openwrt-mediatek-filogic-jiorouter_ax6000-jidu6801-squashfs-sysupgrade.bin
+     sysupgrade -n /tmp/openwrt-mediatek-filogic-jiorouter_ax6000-jidu6j01-squashfs-sysupgrade.bin
 
-The board shares mt7986a-jiorouter-common.dtsi with the existing
-jiorouter_ax6000-jidu6j01 target, so only the switch port layout needs to be
-described. The base MAC address is stored as a 6 byte binary value at
-offset 0 of the MFG partition, which is what the existing
-mediatek_setup_macs() default already reads, so only the case label needs
-to list this board.
+The board is identical in device tree and hardware architecture to the
+existing jidu6j01 image, so add JIDU6801 as DEVICE_ALT4_VARIANT under
+jiorouter_ax6000-jidu6j01. The base MAC address is stored at offset 0x00
+binary in the MFG partition, matching the default MFG fallback.
 
 Signed-off-by: Kamal Bura <burakamal13@gmail.com>
 ---
- .../dts/mt7986a-jiorouter-ax6000-jidu6801.dts | 53 +++++++++++++++++++
- .../filogic/base-files/etc/board.d/02_network |  1 +
- target/linux/mediatek/image/filogic.mk        | 15 ++++++
- 3 files changed, 69 insertions(+)
- create mode 100644 target/linux/mediatek/dts/mt7986a-jiorouter-ax6000-jidu6801.dts
+ target/linux/mediatek/image/filogic.mk | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/target/linux/mediatek/dts/mt7986a-jiorouter-ax6000-jidu6801.dts b/target/linux/mediatek/dts/mt7986a-jiorouter-ax6000-jidu6801.dts
-new file mode 100644
-index 0000000..96f188b
---- /dev/null
-+++ b/target/linux/mediatek/dts/mt7986a-jiorouter-ax6000-jidu6801.dts
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+
-+/dts-v1/;
-+#include "mt7986a-jiorouter-common.dtsi"
-+
-+/ {
-+	compatible = "jiorouter,ax6000-jidu6801", "mediatek,mt7986a";
-+	model = "JioRouter AX6000 JIDU6801";
-+};
-+
-+&switch {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			label = "wan";
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+			label = "lan1";
-+		};
-+
-+		port@2 {
-+			reg = <2>;
-+			label = "lan2";
-+		};
-+
-+		port@3 {
-+			reg = <3>;
-+			label = "lan3";
-+		};
-+
-+		port@4 {
-+			reg = <4>;
-+			label = "lan4";
-+		};
-+
-+		port@6 {
-+			reg = <6>;
-+			ethernet = <&gmac0>;
-+			phy-mode = "2500base-x";
-+
-+			fixed-link {
-+				speed = <2500>;
-+				full-duplex;
-+				pause;
-+			};
-+		};
-+	};
-+};
-diff --git a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
-index a71bce3..9f3ffcf 100644
---- a/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
-+++ b/target/linux/mediatek/filogic/base-files/etc/board.d/02_network
-@@ -321,6 +321,7 @@ mediatek_setup_macs()
- 		wan_mac=$label_mac
- 		lan_mac=$(macaddr_add "$label_mac" 1)
- 		;;
-+	jiorouter,ax6000-jidu6801|\
- 	jiorouter,ax6000-jidu6j01)
- 		local mfg_dev
- 		local model
 diff --git a/target/linux/mediatek/image/filogic.mk b/target/linux/mediatek/image/filogic.mk
-index d07abed..2d238e2 100644
+index d07abed..4e45292 100644
 --- a/target/linux/mediatek/image/filogic.mk
 +++ b/target/linux/mediatek/image/filogic.mk
-@@ -2357,6 +2357,21 @@ define Device/jiorouter_ax6000-jidu6j01
- endef
- TARGET_DEVICES += jiorouter_ax6000-jidu6j01
- 
-+define Device/jiorouter_ax6000-jidu6801
-+  DEVICE_VENDOR := JioRouter
-+  DEVICE_MODEL := AX6000
-+  DEVICE_VARIANT := JIDU6801
-+  DEVICE_DTS := mt7986a-jiorouter-ax6000-jidu6801
-+  DEVICE_DTS_DIR := ../dts
-+  DEVICE_PACKAGES := kmod-usb3 kmod-mt7915e kmod-mt7986-firmware mt7986-wo-firmware
-+  UBINIZE_OPTS := -E 5
-+  UBOOTENV_IN_UBI := 1
-+  BLOCKSIZE := 128k
-+  PAGESIZE := 2048
-+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
-+endef
-+TARGET_DEVICES += jiorouter_ax6000-jidu6801
-+
- define Device/kebidumei_ax3000-u22
-   DEVICE_VENDOR := Kebidumei
-   DEVICE_MODEL := AX3000-U22
+@@ -2346,6 +2346,9 @@ define Device/jiorouter_ax6000-jidu6j01
+   DEVICE_ALT3_VENDOR := JioRouter
+   DEVICE_ALT3_MODEL := AX6000
+   DEVICE_ALT3_VARIANT := JIDU6701
++  DEVICE_ALT4_VENDOR := JioRouter
++  DEVICE_ALT4_MODEL := AX6000
++  DEVICE_ALT4_VARIANT := JIDU6801
+   DEVICE_DTS := mt7986a-jiorouter-ax6000-jidu6j01
+   DEVICE_DTS_DIR := ../dts
+   DEVICE_PACKAGES := kmod-usb3 kmod-mt7915e kmod-mt7986-firmware mt7986-wo-firmware
 -- 
 2.55.0
 
