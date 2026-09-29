@@ -24,34 +24,53 @@
 * **Kernel Log:**
   ```text
   spi-nand spi0.0: Winbond SPI NAND was found, capacity: 256 MiB
-  9 fixed-partitions partitions found on MTD device spi0.0
-  Creating 9 MTD partitions on "spi0.0":
+  8 fixed-partitions partitions found on MTD device spi0.0
+  Creating 8 MTD partitions on "spi0.0":
   0x000000000000-0x000000100000 : "BL2"
   0x000000100000-0x000000180000 : "u-boot-env"
   0x000000180000-0x000000380000 : "Factory"
   0x000000380000-0x000000580000 : "FIP"
   0x000000580000-0x000009180000 : "ubi"
   0x000009180000-0x00000eb80000 : "ubi2"
-  0x00000eb80000-0x00000ed80000 : "mfg"
+  0x00000eb80000-0x00000ed80000 : "MFG"
   0x00000ed80000-0x00000ef80000 : "Reserved"
-  0x00000ef80000-0x000010000000 : "NMBM"
   ```
+
+  There are **8** fixed partitions. The NMBM bad-block region
+  (`0x0ef80000`–`0x10000000`) is managed by the driver and is not exposed as
+  a partition. See [`partition-layout.md`](partition-layout.md).
 * **Result:** **PASSED.**
 
 ### 2.3 Ethernet Switch & WAN/LAN Ports
-* **Test:** Connect 1 Gbps client to LAN1, LAN2, LAN3, LAN4; connect 2.5 Gbps gateway to WAN.
-* **Kernel Log:**
+* **Test:** Connect Gigabit clients to LAN1–LAN4 and to WAN.
+* **Kernel Log** (verbatim from a running unit):
   ```text
-  mtk_soc_eth 15100000.ethernet eth0: mediatek frame engine at 0xffffffc081b40000, irq 120
+  mt7530-mdio mdio-bus:1f: configuring for fixed/2500base-x link mode
+  mt7530-mdio mdio-bus:1f: Link is Up - 2.5Gbps/Full - flow control rx/tx
+  mt7530-mdio mdio-bus:1f wan  (uninitialized): PHY [mt7530-0:00] driver [MediaTek MT7531 PHY] (irq=123)
+  mt7530-mdio mdio-bus:1f lan1 (uninitialized): PHY [mt7530-0:01] driver [MediaTek MT7531 PHY] (irq=124)
+  mt7530-mdio mdio-bus:1f lan2 (uninitialized): PHY [mt7530-0:02] driver [MediaTek MT7531 PHY] (irq=125)
+  mt7530-mdio mdio-bus:1f lan3 (uninitialized): PHY [mt7530-0:03] driver [MediaTek MT7531 PHY] (irq=126)
+  mt7530-mdio mdio-bus:1f lan4 (uninitialized): PHY [mt7530-0:04] driver [MediaTek MT7531 PHY] (irq=127)
   mtk_soc_eth 15100000.ethernet eth0: Link is Up - 2.5Gbps/Full - flow control rx/tx
-  mtk_soc_eth 15100000.ethernet eth1: Link is Up - 2.5Gbps/Full
+  wan: configuring for phy/gmii link mode
   ```
 * **Link Status & Verification:**
-  - LAN Ports 1..4: Auto-negotiate 10/100/1000 Mbps line rates with client endpoints.
-  - WAN Port: Auto-negotiates 2.5 Gbps with upstream 2.5G multi-gigabit gateways.
-  - CPU GMAC: Dual 2.5 Gbps SGMII links verified active via `gmac0` and `gmac1`.
-  - Formal synthetic iperf3 multi-stream throughput testing was not formally recorded in lab logs and is marked **NOT FORMALLY BENCHMARKED**.
-* **Result:** **PASSED (Link Negotiation & Packet Forwarding)**; Throughput benchmarks **NOT FORMALLY BENCHMARKED**.
+  - **All five external ports are 1 Gbps.** `wan` reports `speed=1000
+    duplex=full` and comes up in `phy/gmii` mode, which caps it at 1000 Mbps.
+    LAN1–LAN4 use the same internal PHYs in the same GMII mode.
+  - There is **no external Ethernet PHY on this board.** All five user ports
+    are served by the MT7531's own PHYs at MDIO 0x00–0x04; the kernel
+    enumerates no other PHY.
+  - The 2.5 Gbps line above is the **internal** SoC↔switch SerDes, reported
+    by both of its ends: the switch CPU port at `mt7530-mdio mdio-bus:1f` and
+    the SoC side as `eth0` (`speed=2500`). It is not an external port and
+    carries no RJ-45.
+  - Only one GMAC exists (`gmac0`). There is no `gmac1`, and no `eth1` netif.
+  - Formal synthetic iperf3 multi-stream throughput testing was not recorded
+    in lab logs and is marked **NOT FORMALLY BENCHMARKED**.
+* **Result:** **PASSED (Link Negotiation & Packet Forwarding)**; throughput
+  **NOT FORMALLY BENCHMARKED**.
 
 ### 2.4 Wireless Radios (2.4 GHz & 5.0 GHz Wi-Fi 6)
 * **Test:** Initialize `radio0` (2.4 GHz) and `radio1` (5.0 GHz) under `mt7915e`. Test association with Wi-Fi 6 client.

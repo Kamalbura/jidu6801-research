@@ -10,7 +10,7 @@ All images are verified free of barcodes, MAC address stickers, serial numbers, 
 
 | File | Description & Technical Focus | Relevant Documentation |
 |---|---|---|
-| [`01_pcb_overview_top.jpg`](01_pcb_overview_top.jpg) | **Mainboard Top Overview:** Shows the MediaTek MT7986A Filogic 830 SoC heatsink, MT7531 switch heatsink, 4x Gigabit LAN ports (yellow), 1x 2.5G SGMII WAN port (blue), Winbond SPI-NAND location, and 4-pin UART pads. | [`hardware/board-overview.md`](../board-overview.md) |
+| [`01_pcb_overview_top.jpg`](01_pcb_overview_top.jpg) | **Mainboard Top Overview:** Shows the MediaTek MT7986A Filogic 830 SoC heatsink, MT7531 switch heatsink, 4x Gigabit LAN ports (yellow), 1x Gigabit WAN port (blue), Winbond SPI-NAND location, and 4-pin UART pads. | [`hardware/board-overview.md`](../board-overview.md) |
 | [`02_pcb_angled_uart.jpg`](02_pcb_angled_uart.jpg) | **UART Routing Detail:** Angled board view showing the 4-pin UART pads (`3.3V`, `TX`, `RX`, `GND`) wired with flying leads and inline series damping resistor on the RX line. | [`docs/uart.md`](../../docs/uart.md) |
 | [`03_nand_and_uart_macro.jpg`](03_nand_and_uart_macro.jpg) | **NAND & UART Header Macro:** Close-up of the Winbond W25N02KV WSON-8 package (`U9040`), surrounding decoupling caps, test pads, and the labeled UART header silkscreen (`3.3V`, `RX`, `TX`, `GND`). | [`docs/nand.md`](../../docs/nand.md) |
 | [`04_winbond_w25n02kv_chip_macro.jpg`](04_winbond_w25n02kv_chip_macro.jpg) | **Winbond W25N02KV Package Macro:** Extreme macro showing package markings `winbond 25N02KVZEIR 2417 635110800`, Pin 1 index dot, and adjacent PCB pads (`U9040`). | [`HARDWARE_FACTS.md`](../../HARDWARE_FACTS.md) |

@@ -1,56 +1,49 @@
-From e802f9e86dcb6d33430580fda3cee9ce43ed7169 Mon Sep 17 00:00:00 2001
+From 453c924859828754f11e114ec25e5b812a8b81c2 Mon Sep 17 00:00:00 2001
 From: Kamal Bura <burakamal13@gmail.com>
 Date: Tue, 29 Sep 2026 16:04:25 +0530
-Subject: [PATCH] mediatek: filogic: add JioRouter AX6000 JIDU6801 to JIDU6J01
- target
+Subject: [PATCH] mediatek: filogic: add JioRouter AX6000 JIDU6801 to the
+ JIDU6J01 target
 
-The JioRouter AX6000 JIDU6801 is a dual-band Wi-Fi 6 router based on the
-MediaTek MT7986A (Filogic 830) SoC. It shares the identical hardware
-platform with the other JioRouter AX6000 family variants (JIDU6201,
-JIDU6401, JIDU6601, JIDU6701) supported by jiorouter_ax6000-jidu6j01.
+The JioRouter AX6000 JIDU6801 is a dual-band Wi-Fi 6 router on the
+MediaTek MT7986A (Filogic 830) SoC. It is electrically and
+device-tree-identical to the boards already covered by
+jiorouter_ax6000-jidu6j01, so it is added as a further variant of that
+target rather than as a new image and DTS.
 
-Hardware:
-- SoC: MediaTek MT7986A (4x ARM Cortex-A53 @ 2.0 GHz)
-- RAM: 512 MiB DDR4
-- Flash: 256 MiB SPI-NAND (Winbond W25N02KV, MediaTek NMBM)
-- Ethernet: 5x 10/100/1000 Mbps Gigabit ports (1 WAN + 4 LAN)
-  * Switch: MediaTek MT7531AE DSA
-  * Port 0: 1 Gbps WAN (internal MT7531 PHY)
-  * Ports 1-4: 1 Gbps LAN (internal MT7531 PHYs)
-  * Port 6: 2.5 Gbps SGMII CPU link to gmac0 (2500Base-X)
-- Wireless: MediaTek MT7976C DBDC, 4x4 2.4 GHz + 4x4 5 GHz (AX6000)
-- LEDs: 3x GPIO-controlled (Red GPIO 12, Green GPIO 13, Blue GPIO 14)
-- Button: 1x Reset (GPIO 9)
-- USB: 1x USB 3.0 Type-A host
-- UART: 115200 8N1 (3.3V TTL header)
-- Power: 12V DC, 2.5A (barrel jack, 5.5mm/2.1mm center-positive)
+Hardware, common to the family:
+  - SoC:    MediaTek MT7986A, 4x Cortex-A53 @ 2.0 GHz
+  - RAM:    512 MiB DDR4
+  - Flash:  256 MiB SPI-NAND (Winbond W25N02KV, MediaTek NMBM)
+  - Switch: MediaTek MT7531AE DSA
+      * port 0:    1G SGMII/GMII WAN, internal MT7531 PHY
+      * ports 1-4: 1G LAN, internal MT7531 PHYs
+      * port 6:    2.5G SGMII CPU link to gmac0
+  - Wireless: MT7976C DBDC, 4x4 2.4 GHz + 4x4 5 GHz (AX6000)
+  - LEDs:   red GPIO 12, green GPIO 13, blue GPIO 14
+  - Button: reset GPIO 9
+  - USB:    1x USB 3.0 Type-A host
+  - UART:   115200 8N1, 3.3 V TTL header
 
-MAC address layout:
-- WAN / Label: MFG MTD partition, offset 0x00 (6 bytes binary)
-- LAN: WAN + 1
-- 2.4 GHz: WAN + 2
-- 5 GHz: WAN + 3
+The base MAC is a 6 byte binary value at offset 0 of the MFG partition,
+which is what the existing MFG model lookup in 02_network and
+11_fix_wifi_mac already falls back to, so no base-files change is needed.
 
-Flashing instructions:
-1. Connect a 3.3V USB-to-UART adapter to the serial header (115200 8N1).
-2. Retrieve U-Boot credentials from the MFG partition (root access on stock
-   OS, or SPI-NAND dump).
-3. Power on the router and interrupt boot in the serial console using the
-   extracted credentials.
-4. Set up TFTP server on host PC (192.168.1.2) and boot initramfs image:
-     setenv ipaddr 192.168.1.1
-     setenv serverip 192.168.1.2
-     tftpboot 0x46000000 openwrt-mediatek-filogic-jiorouter_ax6000-jidu6j01-initramfs-kernel.bin
-     fdt addr $(fdtcontroladdr)
-     fdt rm /signature
-     bootm
-5. Once booted into OpenWrt initramfs, flash the sysupgrade image:
-     sysupgrade -n /tmp/openwrt-mediatek-filogic-jiorouter_ax6000-jidu6j01-squashfs-sysupgrade.bin
+Tested on hardware: kernel boot, the 8 fixed MTD partitions, the 140 MiB
+UBI attach, SquashFS root with UBIFS overlay, MT7531 DSA setup, 1G on all
+five external ports, 2.5G on the internal CPU link, and both PHYs running
+802.11ax at HE40 (2.4 GHz) and HE160 (5 GHz).
 
-The board is identical in device tree and hardware architecture to the
-existing jidu6j01 image, so add JIDU6801 as DEVICE_ALT4_VARIANT under
-jiorouter_ax6000-jidu6j01. The base MAC address is stored at offset 0x00
-binary in the MFG partition, matching the default MFG fallback.
+Known limitation, and the reason this is not ready to merge: the stock
+bootloader on these units keeps bootcmd=mtkboardboot and its boot path
+requires a rootfs subimage inside the kernel FIT plus a valid vendor
+signature, neither of which an OpenWrt FIT provides. OpenWrt therefore
+only boots unattended after the U-Boot environment has been rewritten,
+which jiorouter_initial_setup does when the first flash is performed from
+the initramfs. A unit flashed by writing the sysupgrade image directly
+retains the stock environment and will stop at the U-Boot prompt on the
+next cold boot. The flashing procedure and a UART-based workaround for
+unattended boot are documented in the project repository; they are being
+reworked before this is proposed for merge.
 
 Signed-off-by: Kamal Bura <burakamal13@gmail.com>
 ---
