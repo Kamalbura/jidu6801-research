@@ -1,4 +1,4 @@
-From ddd9d1474354f8071043e7ddc955fad9f28d9614 Mon Sep 17 00:00:00 2001
+From 8914d364cfa14be836caf6605bd417bb3d152533 Mon Sep 17 00:00:00 2001
 From: Kamal Bura <burakamal13@gmail.com>
 Date: Mon, 28 Sep 2026 04:45:06 +0530
 Subject: [PATCH] mediatek: filogic: add support for JioRouter AX6000 JIDU6801
@@ -10,10 +10,11 @@ Hardware:
 - SoC: MediaTek MT7986A (4x ARM Cortex-A53 @ 2.0 GHz)
 - RAM: 512 MiB DDR4
 - Flash: 256 MiB SPI-NAND (Winbond W25N02KV, MediaTek NMBM)
-- Switch: MediaTek MT7531AE DSA
-  * Port 0: 2.5 Gbps SGMII WAN (MaxLinear GPY211 PHY linked to MAC1 via 2500Base-X)
-  * Ports 1-4: 10/100/1000 Mbps Gigabit Ethernet LAN
-  * Port 6: 2.5 Gbps SGMII CPU link to gmac0
+- Ethernet: 5x 10/100/1000 Mbps Gigabit ports (1 WAN + 4 LAN)
+  * Switch: MediaTek MT7531AE DSA
+  * Port 0: 1 Gbps WAN (internal MT7531 PHY)
+  * Ports 1-4: 1 Gbps LAN (internal MT7531 PHYs)
+  * Port 6: 2.5 Gbps SGMII CPU link to gmac0 (2500Base-X)
 - Wireless: MediaTek MT7976C DBDC, 4x4 2.4 GHz + 4x4 5 GHz (AX6000)
 - LEDs: 3x GPIO-controlled (Red GPIO 12, Green GPIO 13, Blue GPIO 14)
 - Button: 1x Reset (GPIO 9)

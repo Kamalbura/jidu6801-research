@@ -16,7 +16,7 @@ The closest existing target is **`jiorouter,ax6000-jidu6j01`** (`mt7986a-jiorout
 | **Switch** | MediaTek MT7531AE DSA | MediaTek MT7531AE DSA | **COMMON** (Reuses `mt7986a-jiorouter-common.dtsi`) |
 | **Switch Ports** | Port 0 WAN, Ports 1–4 LAN 1–4 | Port 0 WAN, Ports 1–4 LAN 1–4 | **COMMON** (Identical port layout) |
 | **Switch Ports** (6101 for contrast) | `lan2`, `lan3`, `lan4`, `lan1` | `lan1`–`lan4` in order | differs from `jiorouter_ax6000-jidu6101`, which reorders them |
-| **WAN PHY** | MaxLinear GPY211 (2.5 Gbps) | MaxLinear GPY211 (2.5 Gbps) | **COMMON** |
+| **WAN PHY** | Internal MT7531 Gigabit PHY | Internal MT7531 Gigabit PHY | **COMMON** |
 | **Wi-Fi** | MediaTek MT7976C DBDC AX6000 | MediaTek MT7976C DBDC AX6000 | **COMMON** (Reuses `mt7915e`) |
 | **LEDs / Reset** | Red (12), Green (13), Blue (14), Reset (9)| Red (12), Green (13), Blue (14), Reset (9)| **COMMON** |
 | **Model String** | `JioRouter AX6000 JIDU6J01` | `JioRouter AX6000 JIDU6801` | **6801-SPECIFIC** |

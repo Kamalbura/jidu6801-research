@@ -45,21 +45,20 @@ The JioRouter AX6000 JIDU6801 is built on the **MediaTek MT7986A (Filogic 830)**
 ```
                   ┌──────────────────────────────────────────────┐
                   │          MediaTek MT7986A (Filogic 830)      │
-                  └───────────────┬──────────────┬───────────────┘
-                                  │              │
-                   2500Base-X SerDes             │ 2500Base-X SerDes
-                                  ▼              ▼
-                    ┌──────────────────┐   ┌──────────────────────┐
-                    │  MT7531AE Switch │   │ MaxLinear GPY211 PHY │
-                    │   (MDIO 0x1f)    │   │     (MDIO 0x05)      │
-                    └─┬───┬───┬───┬────┘   └──────────┬───────────┘
-                      │   │   │   │                   │
-                     LAN1 LAN2 LAN3 LAN4             WAN
-                     (1G) (1G) (1G) (1G)            (2.5G)
+                  │                     (GMAC0)                  │
+                  └───────────────────────┬──────────────────────┘
+                                          │ 2500Base-X SerDes
+                                          ▼
+                            ┌──────────────────────────┐
+                            │     MT7531AE Switch      │
+                            │       (MDIO 0x1f)        │
+                            └─┬───┬───┬───┬───┬────────┘
+                              │   │   │   │   │
+                             WAN LAN1 LAN2 LAN3 LAN4
+                             (1G)(1G) (1G) (1G) (1G)
 ```
 
-* **LAN Switch:** MediaTek MT7531AE distributed switch architecture (DSA) chip linked to MAC0 via 2.5 Gbps SGMII/2500Base-X. Provides 4 Gigabit Ethernet (10/100/1000Base-T) RJ-45 LAN jacks.
-* **WAN Interface:** 2.5 Gbps Multi-Gigabit Ethernet port powered by an external MaxLinear GPY211 / GPY215 PHY linked to MAC1 via 2500Base-X SerDes.
+* **Ethernet Switch:** MediaTek MT7531AE distributed switch architecture (DSA) chip linked to SoC GMAC0 via a 2.5 Gbps SGMII/2500Base-X CPU link. Provides 5 Gigabit Ethernet (10/100/1000Base-T) RJ-45 jacks: 1 WAN port (Port 0) and 4 LAN ports (Ports 1 to 4).
 
 ---
 

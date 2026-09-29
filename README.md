@@ -16,7 +16,7 @@ enough that the port can be reproduced or maintained by someone else.
 | **SoC** | MediaTek MT7986A (Filogic 830), 4x Cortex-A53 @ 2.0 GHz |
 | **RAM** | 512 MiB DDR4 |
 | **Flash** | 256 MiB Winbond W25N02KV SPI-NAND, MediaTek NMBM, 2048 PEBs of 128 KiB |
-| **Switch** | MediaTek MT7531AE DSA — port 0 = 2.5G WAN (MaxLinear GPY211 PHY), ports 1–4 = 1G LAN, port 6 = 2.5G SGMII CPU link |
+| **Switch** | MediaTek MT7531AE DSA — 5x Gigabit ports (port 0 = 1G WAN, ports 1–4 = 1G LAN), port 6 = 2.5G SGMII CPU link |
 | **Wireless** | MediaTek MT7976C DBDC, 4x4 at 2.4 GHz + 4x4 at 5 GHz (AX6000), `mt7915e` |
 | **LEDs** | Red GPIO 12, Green GPIO 13, Blue GPIO 14 |
 | **Button** | Reset, GPIO 9, active low |

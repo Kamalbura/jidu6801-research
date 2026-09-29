@@ -21,7 +21,7 @@ Every hardware attribute listed in this table is derived from verified physical 
 | **Ethernet Switch IC** | MediaTek MT7531AE DSA Gigabit Switch | MDIO probe @ address `0x1f`; device tree node `&switch` (`compatible = "mediatek,mt7531"`). | **CONFIRMED BY PHYSICAL INSPECTION & SOFTWARE** |
 | **Switch CPU Interface** | Dual 2.5 Gbps SGMII links (Port 5 & Port 6) via 2500Base-X | Kernel log: `Link is Up - 2.5Gbps/Full - flow control rx/tx` (`gmac0: mac@0` on SerDes). | **CONFIRMED BY SOFTWARE** |
 | **LAN Physical Ports** | 4× Gigabit Ethernet RJ-45 jacks (10/100/1000Base-T) | Physical ports labeled LAN1, LAN2, LAN3, LAN4; mapped to MT7531 ports 1, 2, 3, 4. | **CONFIRMED BY PHYSICAL INSPECTION** |
-| **WAN Physical Port / PHY** | 1× 2.5 Gbps Multi-Gigabit WAN (MaxLinear GPY211 / GPY215 PHY) | MDIO probe @ address `0x05` (`ethernet-phy-id67c9.de0a`); linked to MAC1 via 2500Base-X. | **CONFIRMED BY PHYSICAL INSPECTION & SOFTWARE** |
+| **WAN Physical Port / PHY** | 1× Gigabit Ethernet WAN (10/100/1000Base-T) | Internal MT7531 switch PHY (address `0x00`, `mt7530-0:00`). Switch connects to SoC GMAC0 via 2.5 Gbps SGMII (`2500base-x`). | **CONFIRMED BY PHYSICAL INSPECTION & SOFTWARE** |
 | **Wi-Fi Hardware (DBDC)** | MediaTek MT7976C Dual-Band Dual-Concurrent (DBDC) RFIC | Baseband subsystem @ `0x18000000`; 2.4 GHz (MT7976GN) + 5 GHz (MT7976AN). | **CONFIRMED BY PHYSICAL INSPECTION & SOFTWARE** |
 | **2.4 GHz Wi-Fi Capabilities** | 802.11b/g/n/ax (Wi-Fi 6), 4T4R MIMO, 20/40 MHz bandwidth | Verified with `mt7915e` driver; PA/LNA calibration loaded from `Factory` partition. | **CONFIRMED BY SOFTWARE** |
 | **5.0 GHz Wi-Fi Capabilities** | 802.11a/n/ac/ax (Wi-Fi 6), 4T4R MIMO, 20/40/80/160 MHz bandwidth | Verified with `mt7915e` driver; full HE160 channel width operational. | **CONFIRMED BY SOFTWARE** |
@@ -70,7 +70,7 @@ See [`analysis/bootlogs/partition-layout.log`](analysis/bootlogs/partition-layou
 | GPIO Pin | Function / Node | Direction | Active State | Description |
 |:---|:---|:---|:---|:---|
 | **GPIO 5** | MT7531AE Switch Reset | Output | Low | Hardware reset line for the MT7531 Ethernet switch core. |
-| **GPIO 6** | GPY211 WAN PHY Reset | Output | Low | Hardware reset line for the MaxLinear 2.5G WAN transceiver. |
+| **GPIO 6** | Unpopulated / Reserved | N/A | N/A | Reserved GPIO line. |
 | **GPIO 8** | USB VBUS Enable | Output | High | 5V power gating to external USB 3.0 Type-A connector. |
 | **GPIO 9** | Reset Button | Input | Low | Rear tactile switch; internal/external pull-up resistor. |
 | **GPIO 12** | Status LED (Red) | Output | Low | System booting / failsafe / error indication. |
