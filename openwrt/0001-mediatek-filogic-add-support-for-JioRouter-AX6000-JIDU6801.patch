@@ -1,4 +1,4 @@
-From e6eb4e32131e54f72ba014b3f685bf58c0c241e7 Mon Sep 17 00:00:00 2001
+From ddd9d1474354f8071043e7ddc955fad9f28d9614 Mon Sep 17 00:00:00 2001
 From: Kamal Bura <burakamal13@gmail.com>
 Date: Mon, 28 Sep 2026 04:45:06 +0530
 Subject: [PATCH] mediatek: filogic: add support for JioRouter AX6000 JIDU6801
@@ -7,18 +7,41 @@ The JioRouter AX6000 JIDU6801 is a dual-band Wi-Fi 6 router based on the
 MediaTek MT7986A (Filogic 830) SoC.
 
 Hardware:
-  - SoC:    MediaTek MT7986A, 4x Cortex-A53 @ 2.0 GHz
-  - RAM:    512 MiB DDR4
-  - Flash:  256 MiB SPI-NAND (Winbond W25N02KV, MediaTek NMBM)
-  - Switch: MediaTek MT7531AE DSA
-      * port 0: 2.5G SGMII WAN (MaxLinear GPY211 PHY)
-      * ports 1-4: 1G LAN
-      * port 6: 2.5G SGMII CPU link to gmac0
-  - Wireless: MT7976C DBDC, 4x4 2.4 GHz + 4x4 5 GHz (AX6000)
-  - LEDs:   red GPIO 12, green GPIO 13, blue GPIO 14
-  - Button: reset GPIO 9
-  - USB:    1x USB 3.0 Type-A host
-  - UART:   115200 8N1, 3.3 V TTL
+- SoC: MediaTek MT7986A (4x ARM Cortex-A53 @ 2.0 GHz)
+- RAM: 512 MiB DDR4
+- Flash: 256 MiB SPI-NAND (Winbond W25N02KV, MediaTek NMBM)
+- Switch: MediaTek MT7531AE DSA
+  * Port 0: 2.5 Gbps SGMII WAN (MaxLinear GPY211 PHY linked to MAC1 via 2500Base-X)
+  * Ports 1-4: 10/100/1000 Mbps Gigabit Ethernet LAN
+  * Port 6: 2.5 Gbps SGMII CPU link to gmac0
+- Wireless: MediaTek MT7976C DBDC, 4x4 2.4 GHz + 4x4 5 GHz (AX6000)
+- LEDs: 3x GPIO-controlled (Red GPIO 12, Green GPIO 13, Blue GPIO 14)
+- Button: 1x Reset (GPIO 9)
+- USB: 1x USB 3.0 Type-A host
+- UART: 115200 8N1 (3.3V TTL header)
+- Power: 12V DC, 2.5A (barrel jack, 5.5mm/2.1mm center-positive)
+
+MAC address layout:
+- WAN / Label: MFG MTD partition, offset 0x00 (6 bytes binary)
+- LAN: WAN + 1
+- 2.4 GHz: WAN + 2
+- 5 GHz: WAN + 3
+
+Flashing instructions:
+1. Connect a 3.3V USB-to-UART adapter to the serial header (115200 8N1).
+2. Retrieve U-Boot credentials from the MFG partition (root access on stock
+   OS, or SPI-NAND dump).
+3. Power on the router and interrupt boot in the serial console using the
+   extracted credentials.
+4. Set up TFTP server on host PC (192.168.1.2) and boot initramfs image:
+     setenv ipaddr 192.168.1.1
+     setenv serverip 192.168.1.2
+     tftpboot 0x46000000 openwrt-mediatek-filogic-jiorouter_ax6000-jidu6801-initramfs-kernel.bin
+     fdt addr $(fdtcontroladdr)
+     fdt rm /signature
+     bootm
+5. Once booted into OpenWrt initramfs, flash the sysupgrade image:
+     sysupgrade -n /tmp/openwrt-mediatek-filogic-jiorouter_ax6000-jidu6801-squashfs-sysupgrade.bin
 
 The board shares mt7986a-jiorouter-common.dtsi with the existing
 jiorouter_ax6000-jidu6j01 target, so only the switch port layout needs to be
